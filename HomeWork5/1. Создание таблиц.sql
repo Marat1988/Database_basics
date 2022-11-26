@@ -13,7 +13,8 @@ CREATE TABLE Departments --Кафедры
 	FacultyId INT NOT NULL
 	CONSTRAINT PK_Departments_Id PRIMARY KEY (Id),
 	CONSTRAINT CK_Departments_Financing CHECK (Financing>=0),
-	CONSTRAINT CK_Departments_Name CHECK (Name<>'')
+	CONSTRAINT CK_Departments_Name CHECK (Name<>''),
+	CONSTRAINT UQ_Departments_Name UNIQUE (Name)
 );
 GO
 
@@ -22,7 +23,8 @@ CREATE TABLE Faculties --Факультеты
 	Id INT IDENTITY(1,1),
 	Name NVARCHAR(100) NOT NULL
 	CONSTRAINT PK_Faculties_Id PRIMARY KEY (Id),
-	CONSTRAINT CK_Faculties_Name CHECK (Name<>'')
+	CONSTRAINT CK_Faculties_Name CHECK (Name<>''),
+	CONSTRAINT UQ_Faculties_Name UNIQUE (Name)
 );
 GO
 
@@ -34,7 +36,8 @@ CREATE TABLE Groups --Группы
 	DepartmentId INT NOT NULL
 	CONSTRAINT PK_Groups_Id PRIMARY KEY (Id),
 	CONSTRAINT CK_Groups_Name CHECK (Name<>''),
-	CONSTRAINT CK_Groups_Year CHECK (Year BETWEEN 1 AND 5)
+	CONSTRAINT CK_Groups_Year CHECK (Year BETWEEN 1 AND 5),
+	CONSTRAINT UQ_Groups_Name UNIQUE (Name)
 );
 GO
 
