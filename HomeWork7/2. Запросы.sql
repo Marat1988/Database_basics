@@ -1,7 +1,7 @@
 USE Academy;
 GO
 
---1). ¬ывести названи¤ аудиторий, в которых читает лекции преподаватель УEdward HopperФ.
+--1). Вывести названи¤ аудиторий, в которых читает лекции преподаватель Edward Hopper.
 SELECT DISTINCT lr.[Name] AS [Name lectureRoom]
 FROM Teachers t
 INNER JOIN Lectures l ON t.Id=l.TeacherId
