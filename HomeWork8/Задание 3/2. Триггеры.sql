@@ -10,8 +10,8 @@ AFTER INSERT
 AS
 BEGIN
  IF EXISTS(SELECT *
-	   FROM Buyer p
-	   INNER JOIN Seller s ON p.FIO=s.FIO) --4 пункт задания
+		   FROM Buyer p
+		   INNER JOIN Seller s ON p.FIO=s.FIO) --4 пункт задания
  BEGIN
   RAISERROR('Такой покупатель существует в таблице продавцов', 16, 1)
   ROLLBACK TRAN
@@ -20,7 +20,7 @@ BEGIN
  BEGIN
   IF EXISTS(SELECT * --1 пункт задания
             FROM Buyer p
-	    INNER JOIN inserted i ON p.FIO=i.FIO AND p.id!=i.Id)
+			INNER JOIN inserted i ON p.FIO=i.FIO AND p.id!=i.Id)
   BEGIN
    INSERT SpecialBuyer (IdBuyer, FIO)
    SELECT id, FIO FROM inserted
@@ -41,9 +41,9 @@ INSTEAD OF DELETE
 AS
 BEGIN
  IF EXISTS(SELECT *
-	   FROM deleted d
-	   INNER JOIN Document doc ON d.Id=doc.IdBuyer
-	   INNER JOIN DocumentLine dl ON doc.Id=dl.IdDocument)
+		   FROM deleted d
+		   INNER JOIN Document doc ON d.Id=doc.IdBuyer
+		   INNER JOIN DocumentLine dl ON doc.Id=dl.IdDocument)
  BEGIN
   INSERT PurchaseHistory (IdBuyer, FIO, NumberDocument, DateDocument, IdProduct, Price, CountProduct)
   SELECT d.Id AS IdBuyer, d.FIO, doc.Id AS NumberDocument, doc.DateCreate AS DateDocument, dl.IdProduct, dl.Price, dl.CountProduct
@@ -66,8 +66,8 @@ AFTER INSERT
 AS
 BEGIN
  IF EXISTS(SELECT *
-	   FROM Seller s
-	   INNER JOIN Buyer b ON s.FIO=b.FIO)
+		   FROM Seller s
+		   INNER JOIN Buyer b ON s.FIO=b.FIO)
  BEGIN
   RAISERROR('Такой продавец существует в таблице покупателей', 16, 1)
   ROLLBACK TRAN
@@ -84,9 +84,9 @@ BEGIN
  SELECT *
  FROM inserted
  IF EXISTS(SELECT *
-	   FROM inserted i
-	   INNER JOIN Product p ON i.IdProduct=p.Id
-	   WHERE p.[Name] IN ('Яблоки', 'Груши', 'Сливы', 'Кинза'))
+		   FROM inserted i
+		   INNER JOIN Product p ON i.IdProduct=p.Id
+		   WHERE p.[Name] IN ('Яблоки', 'Груши', 'Сливы', 'Кинза'))
  BEGIN
   RAISERROR('Яблоки, груши, сливы, кинза не продаются', 16, 1)
   ROLLBACK TRAN
