@@ -69,7 +69,21 @@ BEGIN
 END;
 GO
 
-/*6). Хранимая процедура отображает информацию о самом популярном производителе среди покупателей.  Популярность среди покупателей определяется по общей сумме продаж*/CREATE PROCEDURE up_sel_InfoPopularManufacturerASBEGIN SELECT TOP 1 m.[Name] AS [Name manufacturer], SUM(ls.Amount) AS Amount FROM LineSales ls INNER JOIN Product p ON ls.IdProduct=p.Id INNER JOIN Manufacturer m ON p.IdManufacturer=m.Id GROUP BY m.[Name]END;GO/*7). Хранимая процедура удаляет всех клиентов, зарегистрированных после указанной даты. 
+/*6). Хранимая процедура отображает информацию о самом популярном производителе среди покупателей. 
+ Популярность среди покупателей определяется по общей сумме продаж*/
+CREATE PROCEDURE up_sel_InfoPopularManufacturer
+AS
+BEGIN
+ SELECT TOP 1 m.[Name] AS [Name manufacturer], SUM(ls.Amount) AS Amount
+ FROM LineSales ls
+ INNER JOIN Product p ON ls.IdProduct=p.Id
+ INNER JOIN Manufacturer m ON p.IdManufacturer=m.Id
+ GROUP BY m.[Name]
+END;
+GO
+
+
+/*7). Хранимая процедура удаляет всех клиентов, зарегистрированных после указанной даты. 
  Дата передаётся в качестве параметра. Процедура возвращает количество удаленных записей.*/
 CREATE PROCEDURE up_del_Clients
 @Date DATETIME
