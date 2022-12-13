@@ -79,6 +79,7 @@ BEGIN
  INNER JOIN Product p ON ls.IdProduct=p.Id
  INNER JOIN Manufacturer m ON p.IdManufacturer=m.Id
  GROUP BY m.[Name]
+ ORDER BY 2 DESC
 END;
 GO
 
@@ -89,5 +90,5 @@ CREATE PROCEDURE up_del_Clients
 @Date DATETIME
 AS
 BEGIN
- DELETE Client WHERE DateCreate<@Date
+ DELETE Client WHERE DateCreate>@Date
 END

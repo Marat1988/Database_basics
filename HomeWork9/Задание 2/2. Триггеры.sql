@@ -33,9 +33,70 @@ BEGIN
  END
  ELSE
  BEGIN
-  INSERT ArchiveMusicDisk
+  INSERT HistoryMusicDisk
   SELECT * FROM deleted
  END
+END;
+GO
+
+/*Прочие триггеры для хранения истории удаления данных из таблиц*/
+CREATE TRIGGER tg_Album_Deleted
+ON Album
+FOR DELETE
+AS
+BEGIN
+  INSERT HistoryAlbum
+  SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER tg_Publisher_Deleted
+ON Publisher
+FOR DELETE
+AS
+BEGIN
+  INSERT HistoryPublisher
+  SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER tg_StyleDisk_Deleted
+ON StyleDisk
+FOR DELETE
+AS
+BEGIN
+  INSERT HistoryStyleDisk
+  SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER tg_Songs_Deleted
+ON Songs
+FOR DELETE
+AS
+BEGIN
+  INSERT HistorySongs
+  SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER tg_SongsDisk_Deleted
+ON SongsDisk
+FOR DELETE
+AS
+BEGIN
+  INSERT HistorySongsDisk
+  SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER tg_Singer_Deleted
+ON Singer
+FOR DELETE
+AS
+BEGIN
+  INSERT HistorySinger
+  SELECT * FROM deleted
 END;
 GO
 

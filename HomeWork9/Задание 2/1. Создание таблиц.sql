@@ -81,50 +81,81 @@ GO
 
 /*Связи между таблицами*/
 ALTER TABLE MusicDisk
-ADD CONSTRAINT FK_MusicDisk_IdAlbum FOREIGN KEY (IdAlbum) REFERENCES Album (Id),
-	CONSTRAINT FK_MusicDisk_IdStyleDisk FOREIGN KEY (IdStyleDisk) REFERENCES StyleDisk (Id),
-	CONSTRAINT FK_MusicDisk_IdPublisher FOREIGN KEY (IdPublisher) REFERENCES Publisher (Id);
-GO
-
-ALTER TABLE MusicDisk NOCHECK CONSTRAINT [FK_MusicDisk_IdAlbum];
-GO
-ALTER TABLE MusicDisk NOCHECK CONSTRAINT [FK_MusicDisk_IdStyleDisk];
-GO
-ALTER TABLE MusicDisk NOCHECK CONSTRAINT [FK_MusicDisk_IdPublisher];
+ADD CONSTRAINT FK_MusicDisk_IdAlbum FOREIGN KEY (IdAlbum) REFERENCES Album (Id) ON DELETE CASCADE,
+	CONSTRAINT FK_MusicDisk_IdStyleDisk FOREIGN KEY (IdStyleDisk) REFERENCES StyleDisk (Id) ON DELETE CASCADE,
+	CONSTRAINT FK_MusicDisk_IdPublisher FOREIGN KEY (IdPublisher) REFERENCES Publisher (Id) ON DELETE CASCADE;
 GO
 
 ALTER TABLE SongsDisk
-ADD CONSTRAINT FK_SongsDisk_IdSongs FOREIGN KEY (IdSongs) REFERENCES Songs (Id),
-	CONSTRAINT FK_SongsDisk_IdDisk FOREIGN KEY (IdDisk) REFERENCES MusicDisk (Id);
+ADD CONSTRAINT FK_SongsDisk_IdSongs FOREIGN KEY (IdSongs) REFERENCES Songs (Id) ON DELETE CASCADE,
+	CONSTRAINT FK_SongsDisk_IdDisk FOREIGN KEY (IdDisk) REFERENCES MusicDisk (Id) ON DELETE CASCADE;
 GO
 
 ALTER TABLE Songs
-ADD CONSTRAINT FK_Songs_IdSinger FOREIGN KEY (IdSinger) REFERENCES Singer (Id);
+ADD CONSTRAINT FK_Songs_IdSinger FOREIGN KEY (IdSinger) REFERENCES Singer (Id) ON DELETE CASCADE;
 GO
 
-/*Дополнительная таблица для архива музыкальных дисков*/
-CREATE TABLE ArchiveMusicDisk
+/*Дополнительные таблицы для историй удаления*/
+CREATE TABLE HistoryAlbum --Альбомы
 (
-	Id INT NOT NULL,
+	Id INT,
+	[Name] VARCHAR(100) NOT NULL,
+	DateCreate DATETIME NOT NULL
+	CONSTRAINT PK_HistoryAlbum_Id PRIMARY KEY (Id),
+);
+GO
+
+CREATE TABLE HistoryPublisher --Издатели музыкальных дисков
+(
+	Id INT,
+	[Name] VARCHAR(100) NOT NULL,
+	CONSTRAINT PK_HistoryPublisher_Id PRIMARY KEY (Id),
+);
+GO
+
+CREATE TABLE HistoryStyleDisk --Музыкальные стили дисков
+(
+	Id INT,
+	[Name] VARCHAR(100) NOT NULL,
+	CONSTRAINT PK_HistoryStyleDisk_Id PRIMARY KEY (Id)
+);
+GO
+
+CREATE TABLE HistoryMusicDisk --Музыкальный диск
+(
+	Id INT,
 	[Name] VARCHAR(100) NOT NULL,
 	DateCreate DATETIME NOT NULL,
 	CountSongs INT NOT NULL,
 	IdAlbum INT NOT NULL,
 	IdStyleDisk INT NOT NULL,
 	IdPublisher INT NOT NULL
-	CONSTRAINT PK_ArchiveMusicDisk_Id PRIMARY KEY (Id),
+	CONSTRAINT PK_HistoryMusicDisk_Id PRIMARY KEY (Id)
 );
 GO
 
-ALTER TABLE ArchiveMusicDisk
-ADD CONSTRAINT FK_ArchiveMusicDisk_IdAlbum FOREIGN KEY (IdAlbum) REFERENCES Album (Id),
-	CONSTRAINT FK_ArchiveMusicDisk_IdStyleDisk FOREIGN KEY (IdStyleDisk) REFERENCES StyleDisk (Id),
-	CONSTRAINT FK_ArchiveMusicDisk_IdPublisher FOREIGN KEY (IdPublisher) REFERENCES Publisher (Id);
+CREATE TABLE HistorySongs --Песни
+(
+	Id INT,
+	[Name] VARCHAR(100) NOT NULL,
+	IdSinger INT NOT NULL
+	CONSTRAINT PK_HistorySongs_Id PRIMARY KEY (Id),
+);
 GO
 
-ALTER TABLE ArchiveMusicDisk NOCHECK CONSTRAINT [FK_ArchiveMusicDisk_IdAlbum];
+CREATE TABLE HistorySongsDisk --Песни и диски
+(
+	IdSongs INT NOT NULL,
+	IdDisk INT NOT NULL
+	CONSTRAINT PK_HistorySongsDisk PRIMARY KEY (IdSongs, IdDisk)
+);
 GO
-ALTER TABLE ArchiveMusicDisk NOCHECK CONSTRAINT [FK_ArchiveMusicDisk_IdStyleDisk];
+
+CREATE TABLE HistorySinger --Певцы (Исполнители песен)
+(
+	Id INT,
+	[Name] VARCHAR(100) NOT NULL,
+	CONSTRAINT PK_HistorySinger_Id PRIMARY KEY (Id)
+);
 GO
-ALTER TABLE ArchiveMusicDisk NOCHECK CONSTRAINT [FK_ArchiveMusicDisk_IdPublisher];
-GO
+

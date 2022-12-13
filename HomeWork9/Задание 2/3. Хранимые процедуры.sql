@@ -111,6 +111,6 @@ BEGIN
 								WHERE [Name] LIKE '%'+@NameDisk+'%')
  IF (@@ROWCOUNT>0)
  BEGIN
-  SET  @CountDeleteAlbum=@@ROWCOUNT
+  SET @CountDeleteAlbum=@@ROWCOUNT
  END
 END

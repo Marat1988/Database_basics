@@ -29,16 +29,97 @@ BEGIN
 END;
 GO
 
-/*2. При увольнении сотрудника триггер переносит информацию об уволенном сотруднике в таблицу «Архив сотрудников»*/
+/*2.История*/
 CREATE TRIGGER [dbo].[tg_Employees_Delete]
 ON [dbo].[Employees]
 AFTER DELETE
 AS
 BEGIN
- INSERT ArchiveEmployees
+ INSERT HistoryEmployees
  SELECT * FROM deleted
-END
+END;
 GO
+
+CREATE TRIGGER [dbo].[tg_Post_Delete]
+ON [dbo].[Post]
+AFTER DELETE
+AS
+BEGIN
+ INSERT HistoryPost
+ SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER [dbo].[tg_EmployeesPost_Delete]
+ON [dbo].[EmployeesPost]
+AFTER DELETE
+AS
+BEGIN
+ INSERT HistoryEmployeesPost
+ SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER [dbo].[tg_Product_Delete]
+ON [dbo].[Product]
+AFTER DELETE
+AS
+BEGIN
+ INSERT HistoryProduct
+ SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER [dbo].[tg_Group_Delete]
+ON [dbo].[Group]
+AFTER DELETE
+AS
+BEGIN
+ INSERT HistoryGroup
+ SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER [dbo].[tg_Manufacturer_Delete]
+ON [dbo].[Manufacturer]
+AFTER DELETE
+AS
+BEGIN
+ INSERT HistoryManufacturer
+ SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER [dbo].[tg_Client_Delete]
+ON [dbo].[Client]
+AFTER DELETE
+AS
+BEGIN
+ INSERT HistoryClient
+ SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER [dbo].[tg_Sales_Delete]
+ON [dbo].[Sales]
+AFTER DELETE
+AS
+BEGIN
+ INSERT HistorySales
+ SELECT * FROM deleted
+END;
+GO
+
+CREATE TRIGGER [dbo].[tg_LineSales_Delete]
+ON [dbo].[LineSales]
+AFTER DELETE
+AS
+BEGIN
+ INSERT HistoryLineSales (Id, IdSales, IdProduct, CostPrice,  PriceShowCase, [Count], Price)
+ SELECT Id, IdSales, IdProduct, CostPrice,  PriceShowCase, [Count], Price FROM deleted
+END;
+GO
+
 
 /*3. Триггер запрещает добавлять нового продавца, если количество существующих продавцов больше 6.*/
 CREATE TRIGGER [dbo].[tg_Employees_Insert]
