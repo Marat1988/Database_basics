@@ -1,25 +1,3 @@
-/*Создание БД и таблиц*/
-CREATE DATABASE MusicCollection;
-GO
-
-USE MusicCollection;
-GO
-
-CREATE TABLE Album
-(
-	Id INT IDENTITY(1,1),
-	[Name] VARCHAR(100) NOT NULL
-	CONSTRAINT PK_Album_Id PRIMARY KEY (Id),
-	CONSTRAINT UQ_Album_Name UNIQUE ([Name])
-);
-GO
-
-/*Тестовые данные*/
-INSERT INTO Album ([Name])
-VALUES ('Пробный альбом1'),
-	   ('Пробный альбом2');
-GO
-
 /*1. Предоставьте пользователю с логином Олег доступ на чтение всех таблиц*/
 CREATE LOGIN Олег WITH PASSWORD='12345678',
 				  DEFAULT_DATABASE=[MusicCollection],
@@ -55,18 +33,93 @@ FOR LOGIN Дмитрий
 WITH DEFAULT_SCHEMA=[dbo];
 GO
 
-CREATE ROLE [ЗапретНаТаблицуАльбомов]; --Создаем роль
+CREATE ROLE DenyTableAlbumRead; --Создаем роль для запрета на таблицу Album
 GO
 
-ALTER ROLE [ЗапретНаТаблицуАльбомов] ADD MEMBER Олег; --Добавляем в нее Олега.
+ALTER ROLE [DenyTableAlbumRead]
+ADD MEMBER Олег; --Добавляем в нее Олега.
 GO
 
 GRANT SELECT ON Album --Разрешаем Дмитрию SELECT на таблицу альбомов
 TO Дмитрий;
 GO
 
-DENY SELECT ON Album --Запрещаем пользователям из роли [ЗапретНаТаблицеАльбомов] на таблицу альбомов
-TO [ЗапретНаТаблицуАльбомов];
+DENY SELECT ON Album --Запрещаем пользователям из роли [DenyTableAlbumRead] на таблицу альбомов
+TO [DenyTableAlbumRead]; /*P.S. ХЗ другого способа не нашел.*/
 GO
 
-/*P.S. ХЗ другого способа не нашел.*/
+/*4. Предоставьте возможность чтения данных из таблицы стилей пользователям с логинами: Борис, Диана, Николай, Ирина.*/
+/*Создаем пользователей*/
+CREATE LOGIN Борис WITH PASSWORD='12345678',
+				   DEFAULT_DATABASE=[MusicCollection],
+				   DEFAULT_LANGUAGE=[Russian],
+				   CHECK_EXPIRATION=OFF,
+				   CHECK_POLICY=OFF;
+GO
+
+CREATE USER Борис
+FOR LOGIN [Борис]
+WITH DEFAULT_SCHEMA=[dbo];
+GO
+
+CREATE LOGIN Диана WITH PASSWORD='12345678',
+				   DEFAULT_DATABASE=[MusicCollection],
+				   DEFAULT_LANGUAGE=[Russian],
+				   CHECK_EXPIRATION=OFF,
+				   CHECK_POLICY=OFF;
+GO
+
+CREATE USER Диана
+FOR LOGIN Диана
+WITH DEFAULT_SCHEMA=[dbo];
+GO
+
+CREATE LOGIN Ирина WITH PASSWORD='12345678',
+				   DEFAULT_DATABASE=[MusicCollection],
+				   DEFAULT_LANGUAGE=[Russian],
+				   CHECK_EXPIRATION=OFF,
+				   CHECK_POLICY=OFF;
+GO
+
+CREATE USER Ирина
+FOR LOGIN Ирина
+WITH DEFAULT_SCHEMA=[dbo];
+GO
+
+CREATE LOGIN Николай WITH PASSWORD='12345678',
+					 DEFAULT_DATABASE=[MusicCollection],
+					 DEFAULT_LANGUAGE=[Russian],
+					 CHECK_EXPIRATION=OFF,
+					 CHECK_POLICY=OFF;
+GO
+
+CREATE USER Николай
+FOR LOGIN Николай
+WITH DEFAULT_SCHEMA=[dbo];
+GO
+
+/*Создаем роль. Будет служить для разрешения та таблицу StyleDisk*/
+CREATE ROLE GrantSelectTableMusicStyle;
+GO
+
+/*Добавляем пользователетей в эту роль*/
+ALTER ROLE GrantSelectTableMusicStyle 
+ADD MEMBER Борис;
+GO
+
+ALTER ROLE GrantSelectTableMusicStyle 
+ADD MEMBER Диана;
+GO
+
+ALTER ROLE GrantSelectTableMusicStyle 
+ADD MEMBER Николай;
+GO
+
+ALTER ROLE GrantSelectTableMusicStyle 
+ADD MEMBER Ирина;
+GO
+
+GRANT SELECT ON TheCounts
+TO GrantSelectTableMusicStyle;
+GO
+
