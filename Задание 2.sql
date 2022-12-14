@@ -1,7 +1,26 @@
-/*1. Предоставьте пользователю с логином Олег доступ на чтение всех таблиц*/
+/*Создание БД и таблиц*/
+CREATE DATABASE MusicCollection;
+GO
+
 USE MusicCollection;
 GO
 
+CREATE TABLE Album
+(
+	Id INT IDENTITY(1,1),
+	[Name] VARCHAR(100) NOT NULL
+	CONSTRAINT PK_Album_Id PRIMARY KEY (Id),
+	CONSTRAINT UQ_Album_Name UNIQUE ([Name])
+);
+GO
+
+/*Тестовые данные*/
+INSERT INTO Album ([Name])
+VALUES ('Пробный альбом1'),
+	   ('Пробный альбом2');
+GO
+
+/*1. Предоставьте пользователю с логином Олег доступ на чтение всех таблиц*/
 CREATE LOGIN Олег WITH PASSWORD='12345678',
 				  DEFAULT_DATABASE=[MusicCollection],
 				  DEFAULT_LANGUAGE=[Russian],
@@ -36,18 +55,18 @@ FOR LOGIN Дмитрий
 WITH DEFAULT_SCHEMA=[dbo];
 GO
 
-DENY SELECT
-ON Album
-TO PUBLIC;
+CREATE ROLE [ЗапретНаТаблицуАльбомов]; --Создаем роль
 GO
 
-GRANT SELECT
-ON Album
-TO Дмитрий
-WITH GRANT OPTION;
+ALTER ROLE [ЗапретНаТаблицуАльбомов] ADD MEMBER Олег; --Добавляем в нее Олега.
 GO
 
-GRANT SELECT, INSERT, UPDATE, DELETE 
-ON SCHEMA::dbo
+GRANT SELECT ON Album --Разрешаем Дмитрию SELECT на таблицу альбомов
 TO Дмитрий;
 GO
+
+DENY SELECT ON Album --Запрещаем пользователям из роли [ЗапретНаТаблицеАльбомов] на таблицу альбомов
+TO [ЗапретНаТаблицуАльбомов];
+GO
+
+/*P.S. ХЗ другого способа не нашел.*/
