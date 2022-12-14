@@ -119,7 +119,7 @@ ALTER ROLE GrantSelectTableMusicStyle
 ADD MEMBER Ирина;
 GO
 
-GRANT SELECT ON TheCounts
+GRANT SELECT ON StyleDisk
 TO GrantSelectTableMusicStyle;
 GO
 
