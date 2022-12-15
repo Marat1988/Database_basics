@@ -23,8 +23,8 @@ BEGIN
 	INNER JOIN Employees e ON v.IdEmployees=e.Id
 	WHERE (@DateBegin BETWEEN v.DateBegin AND v.DateEnd)
 		OR (@DateEnd BETWEEN v.DateBegin AND v.DateEnd)
-		OR (v.DateBegin BETWEEN @DateBegin AND v.DateEnd)
-		OR (v.DateEnd BETWEEN @DateBegin AND v.DateEnd)
+		OR (v.DateBegin BETWEEN @DateBegin AND @DateEnd)
+		OR (v.DateEnd BETWEEN @DateBegin AND @DateEnd)
 	GROUP BY e.Id, e.FIO
 	ORDER BY 3 DESC
 END;

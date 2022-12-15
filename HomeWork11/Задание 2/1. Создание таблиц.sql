@@ -11,7 +11,7 @@ CREATE TABLE Employees --Сотрудники (барбере)
 	Junior BIT NOT NULL, --Статус. Если истина, то значит новичок
 	DateBegin DATETIME NOT NULL
 	CONSTRAINT PK_Employees_Id PRIMARY KEY (Id),
-	CONSTRAINT CK_Employees_FIO CHECK (FIO<>0),
+	CONSTRAINT CK_Employees_FIO CHECK (FIO<>''),
 	CONSTRAINT UQ_Employees_FIO UNIQUE (FIO)
 );
 GO
@@ -21,8 +21,8 @@ CREATE TABLE ListService --Список услуг
 	Id INT IDENTITY(1,1),
 	[Name] VARCHAR(100) NOT NULL
 	CONSTRAINT PK_ListService_Id PRIMARY KEY (Id),
-	CONSTRAINT CK_ListService_FIO CHECK ([Name]<>0),
-	CONSTRAINT UQ_ListService_FIO UNIQUE ([Name])
+	CONSTRAINT CK_ListService_Name CHECK ([Name]<>''),
+	CONSTRAINT UQ_ListService_Name UNIQUE ([Name])
 );
 GO
 
@@ -31,8 +31,8 @@ CREATE TABLE Clients --Клиенты
 	Id INT IDENTITY(1,1),
 	FIO VARCHAR(50) NOT NULL
 	CONSTRAINT PK_Clients_Id PRIMARY KEY (Id),
-	CONSTRAINT CK_Clients_FIO CHECK (FIO<>0),
-	CONSTRAINT UQ_Clients_FIO UNIQUE (FIO)
+	CONSTRAINT CK_Clients_Name CHECK (FIO<>''),
+	CONSTRAINT UQ_Clients_Name UNIQUE (FIO)
 );
 GO
 
@@ -54,7 +54,7 @@ CREATE TABLE LineVisits --Услуги, оказанные во время ви�
 	IdVisits INT NOT NULL,
 	IdListService INT NOT NULL,
 	DateBegin DATETIME NOT NULL, --Дата начала услуги
-	DateEnd DATETIME NOT NULL, --Дата окончания услуги
+	DateEnd DATETIME, --Дата окончания услуги
 	Price MONEY NOT NULL
 	CONSTRAINT PK_LineVisits_Id PRIMARY KEY (Id),
 	CONSTRAINT CK_LineVisitsDate CHECK(DateBegin<=DateEnd),
